@@ -1,0 +1,1 @@
+Native Android app created with Jetpack Compose to serve as a client for CS50's final project
