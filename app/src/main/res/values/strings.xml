@@ -3,4 +3,6 @@
     <string name="main_menu">Main Menu</string>
     <string name="full_list">All Records</string>
     <string name="summary">Summary</string>
+    <string name="card_full_list_text">All records</string>
+    <string name="card_summary_text">Summary</string>
 </resources>

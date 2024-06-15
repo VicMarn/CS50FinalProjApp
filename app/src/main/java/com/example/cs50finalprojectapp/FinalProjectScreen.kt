@@ -22,7 +22,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.cs50finalprojectapp.ui.AllRecordsScreen
 import com.example.cs50finalprojectapp.ui.MainMenuScreen
+import com.example.cs50finalprojectapp.ui.SummaryScreen
 
 
 enum class FinalProjectScreen(@StringRes val title: Int) {
@@ -86,10 +88,10 @@ fun FinalProjectApp(
                 )
             }
             composable(route = FinalProjectScreen.FullList.name) {
-
+                AllRecordsScreen()
             }
             composable(route = FinalProjectScreen.Summary.name) {
-
+                SummaryScreen()
             }
         }
     }
