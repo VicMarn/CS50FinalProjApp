@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cs50finalprojectapp.ui.AllRecordsScreen
+import com.example.cs50finalprojectapp.ui.FinalProjectViewModel
 import com.example.cs50finalprojectapp.ui.MainMenuScreen
 import com.example.cs50finalprojectapp.ui.SummaryScreen
 
@@ -82,16 +83,17 @@ fun FinalProjectApp(
             startDestination = FinalProjectScreen.MainMenu.name,
             modifier = Modifier.padding(it)
         ) {
+            val viewModel: FinalProjectViewModel = FinalProjectViewModel()
             composable(route = FinalProjectScreen.MainMenu.name) {
                 MainMenuScreen(
                     onNavigationButtonClicked = {route -> navController.navigate(route)}
                 )
             }
             composable(route = FinalProjectScreen.FullList.name) {
-                AllRecordsScreen()
+                AllRecordsScreen(viewModel)
             }
             composable(route = FinalProjectScreen.Summary.name) {
-                SummaryScreen()
+                SummaryScreen(viewModel)
             }
         }
     }

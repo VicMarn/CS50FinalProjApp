@@ -9,37 +9,74 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.cs50finalprojectapp.network.Summary
+import java.util.Locale
 
 @Composable
-fun SummaryScreen() {
+fun SummaryScreen(
+    viewModel: FinalProjectViewModel
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SummaryCard()
+        LaunchedEffect(1) {
+            viewModel.fetchSummary()
+        }
+        SummaryCard(summary = viewModel.summary)
     }
 }
 
 @Composable
-fun SummaryCard() {
+fun SummaryCard(summary: Summary) {
     Card(
         modifier = Modifier.padding(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(1.dp, Color(0xFF3DDC84))
     ) {
+        val formatedTotalTime: Time = formatTime(summary.totalTime)
+        val averageTime = if(summary.numberOfDays != 0){
+            formatTime(totalTime = summary.totalTime / summary.numberOfDays)
+        } else {
+            Time()
+        }
+        val averageDistance: String = String.format(
+            Locale.ENGLISH,
+            "%.2f",
+            summary.totalDistance / summary.numberOfDays
+        )
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Number of days:")
-            Text(text = "Total distance:")
-            Text(text = "Average distance:")
-            Text(text = "Total time:")
-            Text(text = "Average time:")
+            Text(text = "Number of days: ${summary.numberOfDays} days")
+            Text(text = "Total distance: ${summary.totalDistance} km")
+            Text(text = "Average distance: ${averageDistance} km")
+            Text(text = "Total time: ${formatedTotalTime.hours}h ${formatedTotalTime.minutes}min ${formatedTotalTime.seconds}s")
+            Text(text = "Average time: ${averageTime.hours}h ${averageTime.minutes}min ${averageTime.seconds}s")
         }
 
     }
+}
+
+data class Time(
+    var hours: Int = 0,
+    var minutes: Int = 0,
+    var seconds: Int = 0
+)
+fun formatTime(
+    totalTime: Int
+): Time {
+    val hours: Int = totalTime / 3600
+    val minutes: Int = (totalTime - (3600 * hours)) / 60
+    val seconds: Int = totalTime - (3600 * hours) - (60 * minutes)
+    return Time(
+        hours = hours,
+        minutes = minutes,
+        seconds = seconds
+    )
 }
