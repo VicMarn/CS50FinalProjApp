@@ -10,6 +10,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,15 +23,13 @@ import java.util.Locale
 fun SummaryScreen(
     viewModel: FinalProjectViewModel
 ) {
+    val summary: Summary by viewModel.summary.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LaunchedEffect(1) {
-            viewModel.fetchSummary()
-        }
-        SummaryCard(summary = viewModel.summary)
+        SummaryCard(summary = summary)
     }
 }
 
@@ -41,7 +41,7 @@ fun SummaryCard(summary: Summary) {
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(1.dp, Color(0xFF3DDC84))
     ) {
-        val formatedTotalTime: Time = formatTime(summary.totalTime)
+        val formattedTotalTime: Time = formatTime(summary.totalTime)
         val averageTime = if(summary.numberOfDays != 0){
             formatTime(totalTime = summary.totalTime / summary.numberOfDays)
         } else {
@@ -56,7 +56,7 @@ fun SummaryCard(summary: Summary) {
             Text(text = "Number of days: ${summary.numberOfDays} days")
             Text(text = "Total distance: ${summary.totalDistance} km")
             Text(text = "Average distance: ${averageDistance} km")
-            Text(text = "Total time: ${formatedTotalTime.hours}h ${formatedTotalTime.minutes}min ${formatedTotalTime.seconds}s")
+            Text(text = "Total time: ${formattedTotalTime.hours}h ${formattedTotalTime.minutes}min ${formattedTotalTime.seconds}s")
             Text(text = "Average time: ${averageTime.hours}h ${averageTime.minutes}min ${averageTime.seconds}s")
         }
 

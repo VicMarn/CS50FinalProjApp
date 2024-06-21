@@ -26,6 +26,7 @@ import com.example.cs50finalprojectapp.ui.AllRecordsScreen
 import com.example.cs50finalprojectapp.ui.FinalProjectViewModel
 import com.example.cs50finalprojectapp.ui.MainMenuScreen
 import com.example.cs50finalprojectapp.ui.SummaryScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 enum class FinalProjectScreen(@StringRes val title: Int) {
@@ -69,6 +70,7 @@ fun FinalProjectApp(
     val currentScreen = FinalProjectScreen.valueOf(
         backStackEntry?.destination?.route ?: FinalProjectScreen.MainMenu.name
     )
+    val viewModel: FinalProjectViewModel = viewModel()
     Scaffold(
         topBar = {
             FinalProjectAppBar(
@@ -83,7 +85,7 @@ fun FinalProjectApp(
             startDestination = FinalProjectScreen.MainMenu.name,
             modifier = Modifier.padding(it)
         ) {
-            val viewModel: FinalProjectViewModel = FinalProjectViewModel()
+
             composable(route = FinalProjectScreen.MainMenu.name) {
                 MainMenuScreen(
                     onNavigationButtonClicked = {route -> navController.navigate(route)}
