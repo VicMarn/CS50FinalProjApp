@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">CS50 Final Project App</string>
-    <string name="main_menu">Main Menu</string>
+    <string name="main_menu">Distance Tracker</string>
     <string name="full_list">All Records</string>
     <string name="summary">Summary</string>
+    <string name="forecast">Weather Forecast</string>
     <string name="card_full_list_text">All records</string>
     <string name="card_summary_text">Summary</string>
 </resources>

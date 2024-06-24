@@ -27,6 +27,10 @@ class FinalProjectViewModel: ViewModel() {
     private val _formUiState: MutableStateFlow<RecordFormUiState> = MutableStateFlow(RecordFormUiState())
     val formUiState:  StateFlow<RecordFormUiState> = _formUiState.asStateFlow()
 
+    init {
+        Log.d("initTrigger", "init is running")
+    }
+
     fun updateOpenPostDialog(value: Boolean) {
         _formUiState.update {currentState ->
             currentState.copy(
@@ -126,12 +130,6 @@ class FinalProjectViewModel: ViewModel() {
         viewModelScope.launch {
              _summary.value = RetrofitInstance.retrofitService.getSummary()
         }
-    }
-
-    init {
-        fetchAllRecords()
-        fetchSummary()
-        Log.d("initTrigger", "init is running")
     }
 
     fun fetchAllRecords() {

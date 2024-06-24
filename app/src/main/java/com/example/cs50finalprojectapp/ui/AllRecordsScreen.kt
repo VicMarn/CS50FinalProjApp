@@ -2,6 +2,7 @@ package com.example.cs50finalprojectapp.ui
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
@@ -62,7 +65,9 @@ fun AllRecordsScreen(
 ) {
     val allRecords by viewModel.allRecords.collectAsState()
     val formUiState by viewModel.formUiState.collectAsState()
-
+    LaunchedEffect(Unit) {
+        viewModel.fetchAllRecords()
+    }
     when {
         formUiState.openPostDialog -> PostDialog(
             onDismissRequest = {
@@ -173,13 +178,14 @@ fun PostDialog(
     val openCalendarDialog = remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     var isDateInvalid by remember { mutableStateOf(false) }
+
     Dialog(
         onDismissRequest = {
             onDismissRequest()
         }
 
     ) {
-        (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(1F)
+
         Card(
             modifier = Modifier
                 .padding(16.dp)
@@ -187,6 +193,7 @@ fun PostDialog(
             colors = CardDefaults.cardColors(containerColor = Color.White),
             border = BorderStroke(1.dp,Color.Black)
         ) {
+            (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(1F)
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.Center,
@@ -344,13 +351,14 @@ fun PostDialog(
 @Composable
 fun PostRecordRow(viewModel: FinalProjectViewModel) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable{ viewModel.updateOpenPostDialog(true) }
+            .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { viewModel.updateOpenPostDialog(true) }) {
-            Icon(imageVector = Icons.Filled.Add, contentDescription = null)
-        }
+        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
         Text(text = "Add new record")
     }
 }

@@ -24,6 +24,9 @@ fun SummaryScreen(
     viewModel: FinalProjectViewModel
 ) {
     val summary: Summary by viewModel.summary.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.fetchSummary()
+    }
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,

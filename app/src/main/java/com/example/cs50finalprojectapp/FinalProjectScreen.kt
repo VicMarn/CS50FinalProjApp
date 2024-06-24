@@ -27,12 +27,15 @@ import com.example.cs50finalprojectapp.ui.FinalProjectViewModel
 import com.example.cs50finalprojectapp.ui.MainMenuScreen
 import com.example.cs50finalprojectapp.ui.SummaryScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cs50finalprojectapp.ui.ForecastScreen
+import com.example.cs50finalprojectapp.ui.WeatherViewModel
 
 
 enum class FinalProjectScreen(@StringRes val title: Int) {
     MainMenu(R.string.main_menu),
     FullList(R.string.full_list),
-    Summary(R.string.summary)
+    Summary(R.string.summary),
+    Forecast(R.string.forecast)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,6 +74,7 @@ fun FinalProjectApp(
         backStackEntry?.destination?.route ?: FinalProjectScreen.MainMenu.name
     )
     val viewModel: FinalProjectViewModel = viewModel()
+    val weatherViewModel: WeatherViewModel = viewModel()
     Scaffold(
         topBar = {
             FinalProjectAppBar(
@@ -96,6 +100,9 @@ fun FinalProjectApp(
             }
             composable(route = FinalProjectScreen.Summary.name) {
                 SummaryScreen(viewModel)
+            }
+            composable(route = FinalProjectScreen.Forecast.name) {
+                ForecastScreen(weatherViewModel = weatherViewModel)
             }
         }
     }
