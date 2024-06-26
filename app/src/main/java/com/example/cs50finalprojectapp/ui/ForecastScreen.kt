@@ -43,6 +43,7 @@ fun ForecastScreen(
     weatherViewModel: WeatherViewModel,
 ) {
     val weatherResponse by weatherViewModel.weatherResponse.collectAsState()
+    var cityInput by remember{ mutableStateOf("") }
     Column(){
         Row(
             modifier = Modifier
@@ -51,7 +52,7 @@ fun ForecastScreen(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ){
-            var cityInput by remember{ mutableStateOf("") }
+
             OutlinedTextField(
                 value = cityInput,
                 onValueChange = {it: String -> cityInput = it},
@@ -67,26 +68,15 @@ fun ForecastScreen(
         when(val weatherResponse = weatherResponse) {
             is NetworkResponse.Loading -> LoadingMessage(loadingMessage = weatherResponse.message)
             is NetworkResponse.Success -> WeatherDisplay(weatherData = weatherResponse.data)
-            is NetworkResponse.Error -> ErrorMessage(errorMessage = weatherResponse.errorMessage)
+            is NetworkResponse.Error -> ErrorMessage(errorMessage = weatherResponse.errorMessage){ weatherViewModel.getForecast(cityInput)}
         }
     }
 
 }
 
-@Composable
-fun ErrorMessage(errorMessage: String) {
-    Text(errorMessage, color = MaterialTheme.colorScheme.error)
-}
 
-@Composable
-fun LoadingMessage(loadingMessage: String){
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ){
-        Text(loadingMessage, fontSize = 20.sp)
-    }
-}
+
+
 
 @Composable
 fun WeatherDisplay(weatherData: WeatherModel){

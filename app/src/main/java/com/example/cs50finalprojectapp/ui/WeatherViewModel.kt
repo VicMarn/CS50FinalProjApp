@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 class WeatherViewModel: ViewModel() {
@@ -18,20 +19,21 @@ class WeatherViewModel: ViewModel() {
     val weatherResponse: StateFlow<NetworkResponse<WeatherModel>> = _weatherResponse.asStateFlow()
     fun getForecast(city: String) {
         viewModelScope.launch {
-            _weatherResponse.value = NetworkResponse.Loading("Loading")
+            _weatherResponse.value = NetworkResponse.Loading("Loading...")
             try{
                 val response = RetrofitInstance.weatherRetrofitService.getForecast(BuildConfig.WEATHER_API_KEY, city)
-                if(response.code() != 200) {
-                    _weatherResponse.value = NetworkResponse.Error("Unable to get data for ${city}, please try again")
-                } else {
+                if(response.isSuccessful) {
                     response.body()?.let {
                         _weatherResponse.value = NetworkResponse.Success(it)
                         Log.d("weatherResponse", _weatherResponse.value.toString())
                     }
-
+                } else {
+                    _weatherResponse.value = NetworkResponse.Error("Unable to get data for ${city}, please try again")
                 }
             } catch(e: IOException) {
-                _weatherResponse.value = NetworkResponse.Error("Internet connection error")
+                _weatherResponse.value = NetworkResponse.Error("Connection error ${e.message}")
+            } catch(e: HttpException) {
+                _weatherResponse.value = NetworkResponse.Error("Http exception ${e.message}")
             }
 
 

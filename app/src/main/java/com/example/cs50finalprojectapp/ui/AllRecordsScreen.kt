@@ -1,6 +1,7 @@
 package com.example.cs50finalprojectapp.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -55,6 +57,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cs50finalprojectapp.network.ActivityRecord
+import com.example.cs50finalprojectapp.network.NetworkResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -68,6 +71,7 @@ fun AllRecordsScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchAllRecords()
     }
+
     when {
         formUiState.openPostDialog -> PostDialog(
             onDismissRequest = {
@@ -78,11 +82,16 @@ fun AllRecordsScreen(
             formUiState
         )
     }
-    Column {
-        PostRecordRow(viewModel)
-        RecordsLazyColumn(viewModel, allRecords)
+    when(val allRecords = allRecords) {
+        is NetworkResponse.Loading -> LoadingMessage(loadingMessage = allRecords.message)
+        is NetworkResponse.Success -> Column {
+            PostRecordRow(viewModel)
+            RecordsLazyColumn(viewModel, allRecords.data)
+        }
+        is NetworkResponse.Error -> ErrorMessage(errorMessage = allRecords.errorMessage) {
+            viewModel.fetchAllRecords()
+        }
     }
-
 }
 
 @Composable
@@ -90,7 +99,6 @@ fun RecordsLazyColumn(
     viewModel: FinalProjectViewModel,
     allRecords: List<ActivityRecord>
 ) {
-
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -118,13 +126,15 @@ fun RecordsLazyColumn(
                     }) {
                         Text(text = "Delete")
                     }
+                    val context = LocalContext.current
                     when {
                         openDeleteDialog.value -> {
                             DeleteDialog(
                                 onDismissRequest = { openDeleteDialog.value = false },
                                 onConfirmRequest = {
-                                    viewModel.deleteRecord(record.id)
+                                    viewModel.deleteRecord(record.id, context)
                                     openDeleteDialog.value = false
+
                                 }
                             )
                         }
@@ -327,11 +337,12 @@ fun PostDialog(
                     TextButton(onClick = { onDismissRequest() }) {
                         Text(text = "Cancel", color = MaterialTheme.colorScheme.error)
                     }
+                    val context = LocalContext.current
                     TextButton(onClick = {
                         when {
                             dateValidation(formUiState.date) -> isDateInvalid = true
                             else -> {
-                                viewModel.createRecord()
+                                viewModel.createRecord(context = context)
                                 viewModel.updateOpenPostDialog(false)
                                 viewModel.resetFormUiState()
                             }
@@ -353,7 +364,7 @@ fun PostRecordRow(viewModel: FinalProjectViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable{ viewModel.updateOpenPostDialog(true) }
+            .clickable { viewModel.updateOpenPostDialog(true) }
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically

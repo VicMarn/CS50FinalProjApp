@@ -3,6 +3,7 @@ package com.example.cs50finalprojectapp.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -16,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.cs50finalprojectapp.network.NetworkResponse
 import com.example.cs50finalprojectapp.network.Summary
 import java.util.Locale
 
@@ -23,7 +26,7 @@ import java.util.Locale
 fun SummaryScreen(
     viewModel: FinalProjectViewModel
 ) {
-    val summary: Summary by viewModel.summary.collectAsState()
+    val summary: NetworkResponse<Summary> by viewModel.summary.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.fetchSummary()
     }
@@ -32,9 +35,16 @@ fun SummaryScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SummaryCard(summary = summary)
+        when(val summary = summary){
+            is NetworkResponse.Loading -> LoadingMessage(loadingMessage = summary.message)
+            is NetworkResponse.Success -> SummaryCard(summary = summary.data)
+            is NetworkResponse.Error -> ErrorMessage(summary.errorMessage) { viewModel.fetchSummary() }
+        }
+
     }
 }
+
+
 
 @Composable
 fun SummaryCard(summary: Summary) {
