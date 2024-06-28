@@ -1,12 +1,7 @@
 package com.example.cs50finalprojectapp.ui
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cs50finalprojectapp.network.ActivityRecord
@@ -14,13 +9,11 @@ import com.example.cs50finalprojectapp.network.NetworkResponse
 import com.example.cs50finalprojectapp.network.PostRecord
 import com.example.cs50finalprojectapp.network.RetrofitInstance
 import com.example.cs50finalprojectapp.network.Summary
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -32,10 +25,6 @@ class FinalProjectViewModel: ViewModel() {
     val summary: StateFlow<NetworkResponse<Summary>> = _summary.asStateFlow()
     private val _formUiState: MutableStateFlow<RecordFormUiState> = MutableStateFlow(RecordFormUiState())
     val formUiState:  StateFlow<RecordFormUiState> = _formUiState.asStateFlow()
-
-    init {
-        Log.d("initTrigger", "init is running")
-    }
 
     fun updateOpenPostDialog(value: Boolean) {
         _formUiState.update {currentState ->
@@ -133,7 +122,7 @@ class FinalProjectViewModel: ViewModel() {
     }
 
     fun fetchSummary() {
-        _summary.value = NetworkResponse.Loading("Loading")
+        _summary.value = NetworkResponse.Loading("Loading...")
         viewModelScope.launch {
             try{
                 val response = RetrofitInstance.retrofitService.getSummary()
@@ -224,10 +213,5 @@ class FinalProjectViewModel: ViewModel() {
 
         }
     }
-
-    /*fun popListElement(list: List<ActivityRecord>, id: Int): List<ActivityRecord> {
-        return list.filter { it -> it.id != id }
-    }*/
-
 
 }

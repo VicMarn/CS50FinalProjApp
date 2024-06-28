@@ -4,7 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cs50finalprojectapp.network.NetworkResponse
@@ -31,7 +32,7 @@ fun SummaryScreen(
         viewModel.fetchSummary()
     }
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -52,7 +53,7 @@ fun SummaryCard(summary: Summary) {
         modifier = Modifier.padding(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Color(0xFF3DDC84))
+        border = BorderStroke(1.dp, Color(0xFF843DDC))
     ) {
         val formattedTotalTime: Time = formatTime(summary.totalTime)
         val averageTime = if(summary.numberOfDays != 0){
@@ -65,12 +66,30 @@ fun SummaryCard(summary: Summary) {
             "%.2f",
             summary.totalDistance / summary.numberOfDays
         )
+        val fontSize = 20.sp
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Number of days: ${summary.numberOfDays} days")
-            Text(text = "Total distance: ${summary.totalDistance} km")
-            Text(text = "Average distance: ${averageDistance} km")
-            Text(text = "Total time: ${formattedTotalTime.hours}h ${formattedTotalTime.minutes}min ${formattedTotalTime.seconds}s")
-            Text(text = "Average time: ${averageTime.hours}h ${averageTime.minutes}min ${averageTime.seconds}s")
+            Row() {
+                Text(text = "Number of records: ", fontWeight = FontWeight.Bold, fontSize = fontSize, color= Color(0xFF843DDC))
+                Text(text = "${summary.numberOfDays} records", fontSize = fontSize)
+            }
+            Row() {
+                Text(text = "Total distance: ", fontWeight = FontWeight.Bold, fontSize = fontSize, color= Color(0xFF843DDC))
+                Text(text = "${summary.totalDistance} km", fontSize = fontSize)
+            }
+            Row() {
+                Text(text = "Average distance: ", fontWeight = FontWeight.Bold, fontSize = fontSize, color= Color(0xFF843DDC))
+                Text(text = "${averageDistance} km", fontSize = fontSize)
+            }
+            Row() {
+                Text(text = "Total time: ", fontWeight = FontWeight.Bold, fontSize = fontSize, color= Color(0xFF843DDC))
+                Text(
+                    text = "${formattedTotalTime.hours}h ${formattedTotalTime.minutes}min ${formattedTotalTime.seconds}s",
+                    fontSize = fontSize)
+            }
+            Row() {
+                Text(text = "Average time: ", fontWeight = FontWeight.Bold, fontSize = fontSize, color= Color(0xFF843DDC))
+                Text(text = "${averageTime.hours}h ${averageTime.minutes}min ${averageTime.seconds}s", fontSize = fontSize)
+            }
         }
 
     }

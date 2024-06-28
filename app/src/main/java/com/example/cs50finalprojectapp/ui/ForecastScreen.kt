@@ -15,8 +15,8 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,7 +45,9 @@ fun ForecastScreen(
 ) {
     val weatherResponse by weatherViewModel.weatherResponse.collectAsState()
     var cityInput by remember{ mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(){
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,10 +61,17 @@ fun ForecastScreen(
                 onValueChange = {it: String -> cityInput = it},
                 label = { Text("Insert city name") },
                 placeholder = { Text("City name") },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF843DDC), unfocusedBorderColor = Color(0xFF843DDC))
             )
-            IconButton(onClick = { weatherViewModel.getForecast(cityInput) }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = "icon button to search for city")
+            IconButton(onClick = {
+                weatherViewModel.getForecast(cityInput)
+                keyboardController?.hide()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "icon button to search for city",
+                    tint = Color(0xFF843DDC))
             }
 
         }
@@ -91,11 +101,13 @@ fun WeatherDisplay(weatherData: WeatherModel){
             Icon(
                 imageVector = Icons.Filled.LocationOn,
                 contentDescription = "Location icon",
-                modifier = Modifier.size(30.dp))
+                modifier = Modifier.size(30.dp),
+                tint = Color(0xFF843DDC))
             Text(
                 "${weatherData.location.name}, ${weatherData.location.country}",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                color = Color(0xFF843DDC)
             )
         }
         AsyncImage(
