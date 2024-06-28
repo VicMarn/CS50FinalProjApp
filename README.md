@@ -1,5 +1,9 @@
+![Running Tracker Logo](RunningTracker.png)
+
 Running Tracker is a native Android app, developed with Jetpack Compose, whose purpose is to track running activities and present them to the user in a user-friendly UI.
 The main idea of the app is to serve as a system that a person who practices running can use to record each of their training sessions or competitive runs. Although, theorically, it can also be used for other long-distance sports, such as cycling, swimming, triathlon or even hiking.
+
+>This is the client side of my CS50's final project, if you wanna take a look at the server side, [click here](https://github.com/VicMarn/CS50FinalProjApi)
 
 The app has 5 features:
 1. **Create record**
